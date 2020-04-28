@@ -75,6 +75,7 @@ Resources:
         ProductAPI: test
         OrderAPI: test
         UserAPI: test
+        IdentityPoolLogicalId: !GetAtt AuthenticationService.Outputs.IdentityPoolLogicalId
         CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
         CognitoClientID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
 

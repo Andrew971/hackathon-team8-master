@@ -48,6 +48,10 @@ Parameters:
     Default: outPutfile.yaml
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
+  IdentityPoolLogicalId:
+    Default: outPutfile.yaml
+    Description: The name for the project associated with this pipeline (used to namespace resources)
+    Type: String
 Resources: 
 
   WebAppBucket: 
@@ -85,3 +89,4 @@ Resources:
         UserAPI: !Ref UserAPI
         CognitoPoolID: !Ref CognitoPoolID
         CognitoClientID: !Ref CognitoClientID
+        IdentityPoolLogicalId: !Ref IdentityPoolLogicalId

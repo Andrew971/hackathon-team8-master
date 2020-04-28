@@ -216,7 +216,7 @@ Resources:
       Parameters: 
         RestApiID: !Ref RestApi
         ResourceID: !GetAtt UserResource.RootResourceId
-        ResourceName: {userId}
+        ResourceName: "{userId}"
 
   Authorizer:
     Type: AWS::ApiGateway::Authorizer

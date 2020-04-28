@@ -165,33 +165,33 @@ Resources:
         #   - String
         # ReadAttributes: 
         #   - String 
-  # CognitoIdentityPool:
-  #   Type: AWS::Cognito::IdentityPool
-  #   Properties:
-  #     IdentityPoolName: !Sub ${UserPoolName}-IdentityPool
-  #     AllowUnauthenticatedIdentities: false
-  #     DeveloperProviderName: !Sub ${UserPoolName}-Provider
-  #     SupportedLoginProviders: 
-  #       Facebook: graph.facebook.com
-  #       Google: accounts.google.com
-  #     CognitoIdentityProviders: 
-  #       - ClientId: !Ref CognitoUserPoolClient
-  #         ProviderName: !Sub ${UserPoolName}-Provider
-  #         ServerSideTokenCheck: true
-  #     # SamlProviderARNs: 
-  #     #   - String
-  #     # OpenIdConnectProviderARNs: 
-  #     #   - String
-  #     # CognitoStreams: 
-  #     #   - RoleArn: String
-  #     #     StreamingStatus: String
-  #     #     StreamName: String
-  #     # PushSync: 
-  #     #   - ApplicationArns: 
-  #     #       - String
-  #     #     RoleArn: String
-  #     # CognitoEvents: 
-  #     #   String: String
+  CognitoIdentityPool:
+    Type: AWS::Cognito::IdentityPool
+    Properties:
+      IdentityPoolName: !Sub ${UserPoolName}-IdentityPool
+      AllowUnauthenticatedIdentities: false
+      DeveloperProviderName: !Sub ${UserPoolName}-Provider
+      SupportedLoginProviders: 
+        Facebook: graph.facebook.com
+        Google: accounts.google.com
+      CognitoIdentityProviders: 
+        - ClientId: !Ref CognitoUserPoolClient
+          ProviderName: !Sub ${UserPoolName}-Provider
+          ServerSideTokenCheck: true
+      # SamlProviderARNs: 
+      #   - String
+      # OpenIdConnectProviderARNs: 
+      #   - String
+      # CognitoStreams: 
+      #   - RoleArn: String
+      #     StreamingStatus: String
+      #     StreamName: String
+      # PushSync: 
+      #   - ApplicationArns: 
+      #       - String
+      #     RoleArn: String
+      # CognitoEvents: 
+      #   String: String
   Topic:
     Type: AWS::SNS::Topic
     Properties: 
@@ -282,6 +282,8 @@ Outputs:
     Value: !Ref Topic
   UserPoolLogicalId:
     Value: !Ref CognitoUserPool
+  IdentityPoolLogicalId:
+    Value: !Ref CognitoIdentityPool
   UserPoolLogicalClientId:
     Value: !Ref CognitoUserPoolClient
   UserPoolProviderName:
