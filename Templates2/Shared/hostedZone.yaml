@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: 'S3 Bucket config for code base'
+Parameters:
+  Name:
+    Type: String
+    Description: Add a description for the KMS key.
+    MaxLength: 350
+    MinLength: 5
+  Comment:
+    Type: String
+    Description: Add a description for the KMS key.
+    MaxLength: 350
+    MinLength: 5
+
+Resources:
+  HostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties: 
+      HostedZoneConfig: 
+        Comment: !Ref Comment
+      # HostedZoneTags: 
+      #   - 
+      #     Key: 'SampleKey1'
+      #     Value: 'SampleValue1'
+      #   - 
+      #     Key: 'SampleKey2'
+      #     Value: 'SampleValue2'
+      Name: !Ref Name 
+  #     QueryLoggingConfig: 
+  #       CloudWatchLogsLogGroupArn: !GetAtt LogGroup.Arn
+  # LogGroup:
+  #   Type: AWS::Logs::LogGroup
+  #   Properties: 
+  #     LogGroupName: !Sub /aws/route53/${Name}
+  #     RetentionInDays: 1827
+
+  # HostedZoneCloudWatchLogsRole: 
+  #   Type: AWS::IAM::Role
+  #   Properties: 
+  #     AssumeRolePolicyDocument: 
+  #       Version: "2012-10-17"
+  #       Statement: 
+  #         - Effect: Allow
+  #           Principal: 
+  #             Service: 
+  #               - apigateway.amazonaws.com
+  #           Action: 
+  #             - sts:AssumeRole
+  #     Policies: 
+  #       - PolicyName: ApiGatewayLogsPolicy
+  #         PolicyDocument: 
+  #           Version: "2012-10-17"
+  #           Statement: 
+  #             - Effect: Allow
+  #               Action: 
+  #                 - logs:CreateLogGroup
+  #                 - logs:CreateLogStream
+  #                 - logs:DescribeLogGroups
+  #                 - logs:DescribeLogStreams
+  #                 - logs:PutLogEvents
+  #                 - logs:GetLogEvents
+  #                 - logs:FilterLogEvents
+  #               Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/route53/*'
+Outputs:
+  HostedZoneId:
+    Value: !Ref HostedZone
+  HostedZoneNameServers:
+    Value: !Join [ ",", !GetAtt HostedZone.NameServers ]
+
+
+
+

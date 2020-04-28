@@ -31,6 +31,31 @@ Resources:
     Properties: 
       TemplateURL: ./Authentication/index.yaml
 
+  RestApi: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./Shared/apigateway-rest.yaml
+      Parameters: 
+        ApiName: Team8-Backend-Api
+        ApiKeySourceType: HEADER
+        ApiEndpointConfigType: EDGE
+        StageName: v1
+        # HostedZoneId: !GetAtt HostedZone.Outputs.HostedZoneId
+        AuthorizerFunctionName: team8-BackendApiAuthorizer
+        AuthorizerFunctionDescription: Authorizer for team8 Backend service RestApi
+        AuthorizerFunctionHandler: index.handler
+        AuthorizerFunctionMemorySize: "128"
+        AuthorizerFunctionRuntimeVersion: nodejs12.x
+        AuthorizerFunctionTimeout: "10"
+
+        ServiceTag: Api Service
+        ApplicationTag: Backend
+        ApiTypeTag: RestApi
+        PathRole: /
+
+        # CertificateArn: !GetAtt SSLCertificate.Outputs.SSLCertificateArn
+        # ApiDomainNameParam: !Sub 'cloud.${Environnement}.textras.com'
+
   WebClientPipeline: 
     Type: AWS::CloudFormation::Stack
     Properties: 
@@ -47,7 +72,68 @@ Resources:
         COGNITO_POOL_ID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
         COGNITO__CLIENT_POOL_ID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
 
+  ActivityServicePipeline: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./CodePipeline/codePipeline-github-activity-service.yaml
+      Parameters: 
+        KMSKeyArn: !Ref KMSKeyArn
+        KMSKeyID: !Ref KMSKeyID
+        ArtifactStoreBucketName:  !Ref ArtifactStoreBucketName
+        PipelineName: team8-activity-service
+        ProjectName: team8-activity-service
+        PipelineDescription: team8-activity-service
+        PipelineBuildSpecFileName: team8-activity-service-buildSpec.yaml
+        PipelineStackName: team8-activity-service-Stack
+        PathRole: /
+        PipelineChangeSetName: team8-activity-service-changeSet
+        PipelineOutputFileName: team8-activity-service-output.yaml
+        GitHubRepo: hackathon-team8-activity-service
+        GitHubOwner: !Ref GitHubOwner
+        GitHubBranch: master
+        GitHubToken: !Ref GitHubToken
 
+  OrganizationServicePipeline: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./CodePipeline/codePipeline-github-organization-service.yaml
+      Parameters: 
+        KMSKeyArn: !Ref KMSKeyArn
+        KMSKeyID: !Ref KMSKeyID
+        ArtifactStoreBucketName:  !Ref ArtifactStoreBucketName
+        PipelineName: team8-organization-service
+        ProjectName: team8-organization-service
+        PipelineDescription: team8-organization-service
+        PipelineBuildSpecFileName: team8-organization-service-buildSpec.yaml
+        PipelineStackName: team8-organization-service-Stack
+        PathRole: /
+        PipelineChangeSetName: team8-organization-service-changeSet
+        PipelineOutputFileName: team8-organization-service-output.yaml
+        GitHubRepo: hackathon-team8-organization-service
+        GitHubOwner: !Ref GitHubOwner
+        GitHubBranch: master
+        GitHubToken: !Ref GitHubToken
+
+  TeamServicePipeline: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./CodePipeline/codePipeline-github-team-service.yaml
+      Parameters: 
+        KMSKeyArn: !Ref KMSKeyArn
+        KMSKeyID: !Ref KMSKeyID
+        ArtifactStoreBucketName:  !Ref ArtifactStoreBucketName
+        PipelineName: team8-team-service
+        ProjectName: team8-team-service
+        PipelineDescription: team8-team-service
+        PipelineBuildSpecFileName: team8-team-service-buildSpec.yaml
+        PipelineStackName: team8-team-service-Stack
+        PathRole: /
+        PipelineChangeSetName: team8-team-service-changeSet
+        PipelineOutputFileName: team8-team-service-output.yaml
+        GitHubRepo: hackathon-team8-team-service
+        GitHubOwner: !Ref GitHubOwner
+        GitHubBranch: master
+        GitHubToken: !Ref GitHubToken
 
 Outputs:
   AuthenticationTopicArn:

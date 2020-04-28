@@ -16,6 +16,52 @@ Parameters:
     Description: Name the bucket used for storing the Pipeline Artifacts.
     MaxLength: 50
     MinLength: 5
+  
+  ApiLogicalId:
+    Type: String
+    Description: Add a description for the KMS key.
+    MaxLength: 350
+    MinLength: 5
+  ApiRootResource:
+    Type: String
+    Description: Name the bucket used for storing the Pipeline Artifacts.
+    MaxLength: 50
+    MinLength: 5
+  AuthorizerLogicalId:
+    Type: String
+    Description: Name the bucket used for storing the Pipeline Artifacts.
+    MaxLength: 50
+    MinLength: 5
+  HTTPApiNameSpaceArn:
+    Type: String
+    Description: Add a description for the KMS key.
+    MaxLength: 350
+    MinLength: 5
+  HTTPApiNameSpaceId:
+    Type: String
+    Description: Name the bucket used for storing the Pipeline Artifacts.
+    MaxLength: 50
+    MinLength: 5
+  ServiceName:
+    Type: String
+    Description: Name the bucket used for storing the Pipeline Artifacts.
+    MaxLength: 150
+    MinLength: 5
+  HostedZoneId:
+    Type: String
+    Description: Add a description for the KMS key.
+    MaxLength: 350
+    MinLength: 5
+  HostedZoneNameServers:
+    Type: CommaDelimitedList
+    Description: Name the bucket used for storing the Pipeline Artifacts.
+
+  CertificateArn:
+    Type: String
+    Description: Name the bucket used for storing the Pipeline Artifacts.
+    MaxLength: 350
+    MinLength: 5
+
   PipelineName:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
@@ -48,23 +94,24 @@ Parameters:
     Default: project description
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
+  GitHubRepo:
+    Default: mozilla-iam
+    Description: The owner or organization for the GitHub project
+    Type: String
   GitHubOwner:
     Default: mozilla-iam
     Description: The owner or organization for the GitHub project
     Type: String
-
-  GitHubRepo:
-    Default: sso-dashboard
-    Description: The GitHub repository name
-    Type: String
   GitHubBranch:
-    Default: master
-    Description: The GitHub repository name
+    Default: mozilla-iam
+    Description: The owner or organization for the GitHub project
     Type: String
   GitHubToken:
-    Description: The GitHub repository name
+    Default: mozilla-iam
+    Description: The owner or organization for the GitHub project
     Type: String
     NoEcho: true
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -74,6 +121,15 @@ Metadata:
           - PathRole
           - KMSKeyID
           - KMSKeyArn
+          - ApiLogicalId
+          - ApiRootResource
+          - AuthorizerLogicalId
+          - HTTPApiNameSpaceArn
+          - HTTPApiNameSpaceId
+          - ServiceName
+          - HostedZoneId
+          - HostedZoneNameServers
+          - CertificateArn
       - Label:
           default: "Bucket Settings"
         Parameters:
@@ -98,9 +154,16 @@ Metadata:
       - Label:
           default: "GitHub Settings"
         Parameters:
+          - GitHubRepo
           - GitHubOwner
+          - GitHubBranch
           - GitHubToken
-
+Mappings:
+  Setting:
+    Account: 
+      Dev: "172530067568"
+      Staging: "693655122747"
+      Prod: "561322574534"
 Resources:
 
   CodeBuildProjectService:
@@ -234,10 +297,44 @@ Resources:
                 ChangeSetName: !Ref PipelineChangeSetName
                 RoleArn: !GetAtt LambdaExecutionIAMRole.Arn
                 TemplatePath: !Sub ${ProjectName}-Build::${PipelineOutputFileName}
+                ParameterOverrides: !Sub 
+                  - | 
+                      {
+                        "KMSKeyArn": "${KMSKeyArn}",
+                        "KMSKeyID": "${KMSKeyID}",
+                        "ArtifactStoreBucketName": "${ArtifactStoreBucketName}",
+                        "ApiLogicalId": "${ApiLogicalId}",
+                        "ApiRootResource": "${ApiRootResource}",
+                        "AuthorizerLogicalId": "${AuthorizerLogicalId}",
+                        "HTTPApiNameSpaceArn": "${HTTPApiNameSpaceArn}",
+                        "HTTPApiNameSpaceId": "${HTTPApiNameSpaceId}",
+                        "ServiceName": "${ServiceName}",
+                        "HostedZoneId": "${HostedZoneId}",
+                        "HostedZoneNameServers": "${HostedZoneNameServers}",
+                        "CertificateArn": "${CertificateArn}",
+                        "GitHubToken": "${GitHubToken}",
+                        "GitHubOwner": "${GitHubOwner}",
+                        "GitHubBranch": "development",
+                        "Environnement": "dev"
+                      }
+                  - KMSKeyArn: !Ref KMSKeyArn
+                    KMSKeyID: !Ref KMSKeyID
+                    ArtifactStoreBucketName: !Ref ArtifactStoreBucketName
+                    ApiLogicalId: !Ref ApiLogicalId
+                    ApiRootResource: !Ref ApiRootResource
+                    AuthorizerLogicalId: !Ref AuthorizerLogicalId
+                    HTTPApiNameSpaceArn: !Ref HTTPApiNameSpaceArn
+                    HTTPApiNameSpaceId: !Ref HTTPApiNameSpaceId
+                    ServiceName: !Ref ServiceName
+                    HostedZoneId: !Ref HostedZoneId
+                    HostedZoneNameServers: !Join [',', !Ref HostedZoneNameServers]
+                    CertificateArn: !Ref CertificateArn
+                    GitHubToken: !Ref GitHubToken
+                    GitHubOwner: !Ref GitHubOwner
               InputArtifacts:
                 - Name: !Sub ${ProjectName}-Build
               RunOrder: 1
-        - Name: Deploy
+        - Name: DeployDev
           Actions:
             - Name: !Sub ${ProjectName}-Deploy
               ActionTypeId:
@@ -287,6 +384,7 @@ Resources:
               - logs:* 
               - dynamodb:*
               - cloudwatch:*
+              - route53:*
               Resource: "*"
             - Sid: VisualEditor1
               Effect: Allow
@@ -296,6 +394,7 @@ Resources:
               - apigateway:*
               - codedeploy:RegisterApplicationRevision
               - iam:CreateRole
+              - iam:CreateServiceLinkedRole
               - iam:DeleteRole
               - codedeploy:DeleteApplication
               - iam:PutRolePolicy
@@ -339,12 +438,18 @@ Resources:
                 - dynamodb:*
                 - lambda:*
                 - cloudfront:*
+                - route53:*
+                - servicediscovery:*
               Resource: "*"
               Effect: Allow
             - Effect: Allow
               Action:
               - kms:*
               Resource: !Ref KMSKeyArn
+            - Action: 
+                - sts:AssumeRole
+              Effect: Allow
+              Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:role/*'
             - Effect: Allow
               Action:
               - ssm:*
@@ -389,6 +494,18 @@ Resources:
                 - codecommit:UploadArchive
                 Resource: "*"
                 Effect: Allow
+              -
+                Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetBucketPolicy
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource:
+                  - arn:aws:s3:::codepipeline-textras-services/*
+                  - arn:aws:s3:::codepipeline-textras-services
+                  - arn:aws:s3:::textras-codebase-bucket/*
+                  - arn:aws:s3:::textras-codebase-bucket
               - Action:
                 - codedeploy:CreateDeployment
                 - codedeploy:GetApplicationRevision
@@ -413,6 +530,9 @@ Resources:
                 - ecs:*
                 - logs:* 
                 - dynamodb:*
+                - cloudfront:*
+                - route53:*
+                - servicediscovery:*
                 Resource: "*"
                 Effect: Allow
               - Action:
@@ -470,11 +590,26 @@ Resources:
                 Action:
                 - cloudformation:ValidateTemplate
                 Resource: "*"
+              -
+                Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetBucketPolicy
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource:
+                  - arn:aws:s3:::codepipeline-textras-services/*
+                  - arn:aws:s3:::codepipeline-textras-services
+                  - arn:aws:s3:::textras-codebase-bucket/*
+                  - arn:aws:s3:::textras-codebase-bucket
               - Effect: Allow
                 Action:
                 - kms:*
                 Resource: !Ref KMSKeyArn
-
+              - Action: 
+                  - sts:AssumeRole
+                Effect: Allow
+                Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:role/*'
       Path: !Ref PathRole
       RoleName: !Sub ${PipelineName}-role
 
@@ -487,4 +622,3 @@ Outputs:
     Value: !Ref Pipeline
   PipelineVersion:
     Value: !GetAtt  Pipeline.Version 
-
