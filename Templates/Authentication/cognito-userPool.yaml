@@ -1,0 +1,292 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Cognito User Pool template.
+Parameters:
+  UserPoolName:
+    Type: String
+    Description: Buket Name for website config( eg exemple.com).
+    MaxLength: 150
+    MinLength: 5
+  # SESEmailArn:
+  #   Type: String
+  #   Description: Buket Name for website config( eg exemple.com).
+  #   MaxLength: 550
+  #   MinLength: 5
+  AutoVerifiedAttributes: 
+    Type: String
+    Description: Version Of Node Js
+    AllowedValues: 
+      - email
+      - phone_number
+  UsernameAttributes: 
+    Type: String
+    Description: Version Of Node Js
+    AllowedValues: 
+      - email
+      - phone_number
+
+  TopicName:
+    Type: String
+    Description: Environment Name (injected by Stackery at deployment time)
+
+  FunctionName:
+    Type: String
+    Description: Environment Name (injected by Stackery at deployment time)
+
+  FunctionDescription:
+    Type: String
+    Description: Environment Name (injected by Stackery at deployment time)
+
+  FunctionHandler:
+    Type: String
+    Description: Environment Name (injected by Stackery at deployment time)
+
+  FunctionMemorySize:
+    Type: Number
+    Description: the value of the memory size you want to use for this lambda.
+    Default: 128
+    AllowedValues:
+      - 128
+      - 640
+      - 1280
+      - 1792
+      - 2048
+
+  FunctionRuntimeVersion:
+    Type: String
+    Description: Version Of Node Js
+    AllowedValues: 
+      - nodejs8.10
+      - nodejs10.x
+      - nodejs12.x
+
+  FunctionTimeout:
+    Type: Number
+    Description: the value of the timeout you want to give to this lambda.
+    Default: 3
+
+  ServiceTag:
+    Type: String
+    Description: Environment Name (injected by Stackery at deployment time)
+
+  ApplicationTag:
+    Type: String
+    Description: Environment Name (injected by Stackery at deployment time)
+
+  PathRole:
+    Type: String
+    Description: Environment Name (injected by Stackery at deployment time)
+
+  ClientName:
+    Type: String
+    Description: Buket Name for website config( eg exemple.com).
+    MaxLength: 150
+    MinLength: 5
+  ExplicitAuthFlows: 
+    Type: String
+    Description: Version Of Node Js
+    AllowedValues: 
+      - ALLOW_USER_PASSWORD_AUTH
+Resources:
+  CognitoUserPool: 
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Ref UserPoolName
+      UsernameAttributes: 
+        - !Ref UsernameAttributes
+      AutoVerifiedAttributes: 
+        - !Ref AutoVerifiedAttributes
+      AdminCreateUserConfig: 
+        AllowAdminCreateUserOnly: false
+        InviteMessageTemplate: 
+          EmailMessage: 'Your verification code is {####} and username is {username}'
+          EmailSubject: Invite
+          SMSMessage: 'Your verification code is {####} and username is {username}'
+        UnusedAccountValidityDays: 7
+      DeviceConfiguration: 
+        ChallengeRequiredOnNewDevice: true
+        DeviceOnlyRememberedOnUserPrompt: true
+      MfaConfiguration: 'OFF'
+      # EmailConfiguration: 
+      #   SourceArn: !Ref SESEmailArn
+      EmailVerificationSubject: Verification
+      EmailVerificationMessage: 'Your verification code is {####}'
+      SmsAuthenticationMessage: 'Your verification code is {####}'
+      SmsVerificationMessage: 'Your verification code is {####}'
+      Policies: 
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: false
+          RequireNumbers: false
+          RequireSymbols: false
+          RequireUppercase: false
+      # Schema: 
+      #   # - AttributeDataType: String
+      #   #   DeveloperOnlyAttribute: false
+      #   #   Mutable: true
+      #   #   Name: name
+      #   #   # NumberAttributeConstraints:
+      #   #   #   MaxValue: String
+      #   #   #   MinValue: String
+      #   #   StringAttributeConstraints:
+      #   #     MaxLength: '250'
+      #   #     MinLength: '4'
+      #   #   Required: true
+      LambdaConfig: 
+        # CustomMessage: String
+        # DefineAuthChallenge: String
+        # CreateAuthChallenge: String
+        # PostAuthentication: String
+        PostConfirmation: !Ref FunctionAlias
+        # PreAuthentication: String
+        # PreSignUp: String
+        # VerifyAuthChallengeResponse: String
+      UserPoolTags: 
+        projectName: haulyShop
+        technology: Authentication
+
+  CognitoUserPoolClient: 
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+        ClientName: !Ref ClientName
+        PreventUserExistenceErrors: ENABLED
+        # RefreshTokenValidity: 3650
+        ExplicitAuthFlows: 
+          - !Ref ExplicitAuthFlows
+          - ALLOW_USER_SRP_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+        GenerateSecret: false
+        RefreshTokenValidity: 30
+        SupportedIdentityProviders:
+          - COGNITO
+          # - Facebook
+          # - Google
+        UserPoolId: !Ref CognitoUserPool
+        # WriteAttributes: 
+        #   - String
+        # ReadAttributes: 
+        #   - String 
+  # CognitoIdentityPool:
+  #   Type: AWS::Cognito::IdentityPool
+  #   Properties:
+  #     IdentityPoolName: !Sub ${UserPoolName}-IdentityPool
+  #     AllowUnauthenticatedIdentities: false
+  #     DeveloperProviderName: !Sub ${UserPoolName}-Provider
+  #     SupportedLoginProviders: 
+  #       Facebook: graph.facebook.com
+  #       Google: accounts.google.com
+  #     CognitoIdentityProviders: 
+  #       - ClientId: !Ref CognitoUserPoolClient
+  #         ProviderName: !Sub ${UserPoolName}-Provider
+  #         ServerSideTokenCheck: true
+  #     # SamlProviderARNs: 
+  #     #   - String
+  #     # OpenIdConnectProviderARNs: 
+  #     #   - String
+  #     # CognitoStreams: 
+  #     #   - RoleArn: String
+  #     #     StreamingStatus: String
+  #     #     StreamName: String
+  #     # PushSync: 
+  #     #   - ApplicationArns: 
+  #     #       - String
+  #     #     RoleArn: String
+  #     # CognitoEvents: 
+  #     #   String: String
+  Topic:
+    Type: AWS::SNS::Topic
+    Properties: 
+      DisplayName: !Ref TopicName
+
+  OnCognitoSignupPermission:
+      Type: 'AWS::Lambda::Permission'
+      Properties:
+        Action: "lambda:InvokeFunction"
+        FunctionName: !Ref FunctionAlias
+        Principal: "cognito-idp.amazonaws.com"
+        SourceArn: !GetAtt CognitoUserPool.Arn
+
+  PostConfirmmationLambda: 
+    Type: AWS::Lambda::Function
+    Properties: 
+      FunctionName: !Ref FunctionName
+      Code: ../../src/AuthenticationService/PostConfirmmationLambda/build
+      Description: !Ref FunctionDescription
+      Handler: !Ref FunctionHandler
+      MemorySize: !Ref FunctionMemorySize
+      Role: !GetAtt FunctionIAMRole.Arn
+      Runtime: !Ref FunctionRuntimeVersion
+      Timeout: !Ref FunctionTimeout
+      # DeadLetterConfig : 
+      #   TargetArn: !GetAtt DynamoDBStreamDeadletterQueue.Arn
+      Environment: 
+          Variables: 
+            SNS_TOPIC_ARN: !Ref Topic
+      Tags: 
+        - Key: Service
+          Value: !Ref ServiceTag
+        - Key: Application
+          Value: !Ref ApplicationTag
+        - Key: Resource
+          Value: SNS publisher for Update Topic
+  
+  FunctionVersionV5:
+    Type: AWS::Lambda::Version
+    Properties:
+      FunctionName: !Ref PostConfirmmationLambda
+      Description : first commit.
+
+  FunctionAlias:
+    Type: AWS::Lambda::Alias
+    Properties:
+      FunctionVersion: !GetAtt FunctionVersionV5.Version
+      FunctionName: !Ref PostConfirmmationLambda
+      Name: !Sub ${FunctionName}-V1
+      
+  FunctionIAMRole: 
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: Allow
+            Principal: 
+              Service: 
+              - lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies: 
+        - PolicyName: !Sub ${ServiceTag}-lambdaSNSPublish-policy
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - Effect: Allow
+                Action: 
+                  - logs:*
+                Resource: !Sub arn:aws:logs:${AWS::Region}:*:log-group:/aws/lambda/*:*:*
+              - Effect: Allow
+                Action: 
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents 
+                  - cognito-idp:*
+                  - cognito-identity:*
+                Resource: "*"
+              - Effect: Allow
+                Action: 
+                  - sns:Publish
+                Resource: !Ref Topic
+      Path: !Ref PathRole
+      RoleName: !Sub ${ServiceTag}-${FunctionName}-role
+
+Outputs:
+  AuthenticationTopicArn:
+    Value: !Ref Topic
+  UserPoolLogicalId:
+    Value: !Ref CognitoUserPool
+  UserPoolLogicalClientId:
+    Value: !Ref CognitoUserPoolClient
+  UserPoolProviderName:
+    Value: !GetAtt  CognitoUserPool.ProviderName
+  UserPoolProviderURL:
+    Value: !GetAtt  CognitoUserPool.ProviderURL
+  UserPoolArn:
+    Value: !GetAtt  CognitoUserPool.Arn

@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Push Notification Service.
+Parameters:
+  GitHubToken:
+      Type: AWS::SSM::Parameter::Value<String>
+      Default: 'haulyshop-github-apikey' 
+      NoEcho: true
+Resources: 
+
+  SharedServicePipeline: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./codePipeline/codePipeline-github-shared-service.yaml
+      Parameters: 
+        KMSKeyArn: !ImportValue MasterPipeline-KMSKeyArn
+        KMSKeyID: !ImportValue MasterPipeline-KMSKeyLogicalId
+        ArtifactStoreBucketName: !ImportValue MasterPipeline-ArtifactStoreBucketName
+        PipelineName: haulyshop-shared-service
+        ProjectName: haulyshop-shared-service
+        PipelineDescription: haulyshop-shared-service
+        PipelineBuildSpecFileName: haulyshop-shared-service-BuildSpec.yaml
+        PipelineStackName: haulyshop-shared-service-Stack
+        PathRole: /
+        PipelineChangeSetName: haulyshop-shared-service-ChangeSet
+        PipelineOutputFileName: haulyshop-shared-service-Output.yaml
+        GitHubRepo: haulyshop-shared-service
+        GitHubOwner: Andrew971
+        GitHubBranch: master
+        GitHubToken: !Ref GitHubToken
+
+  ClientServicePipeline: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./codePipeline/codePipeline-github-client-service.yaml
+      Parameters: 
+        KMSKeyArn: !ImportValue MasterPipeline-KMSKeyArn
+        KMSKeyID: !ImportValue MasterPipeline-KMSKeyLogicalId
+        ArtifactStoreBucketName: !ImportValue MasterPipeline-ArtifactStoreBucketName
+        PipelineName: haulyshop-client-service
+        ProjectName: haulyshop-client-service
+        PipelineDescription: haulyshop-client-service
+        PipelineBuildSpecFileName: haulyshop-client-service-BuildSpec.yaml
+        PipelineStackName: haulyshop-client-service-Stack
+        PathRole: /
+        PipelineChangeSetName: haulyshop-client-service-ChangeSet
+        PipelineOutputFileName: haulyshop-client-service-Output.yaml
+        GitHubRepo: haulyshop-client-service
+        GitHubOwner: Andrew971
+        GitHubBranch: master
+        GitHubToken: !Ref GitHubToken
+        
+  OrderServicePipeline: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./codePipeline/codePipeline-github-order-service.yaml
+      Parameters: 
+        KMSKeyArn: !ImportValue MasterPipeline-KMSKeyArn
+        KMSKeyID: !ImportValue MasterPipeline-KMSKeyLogicalId
+        ArtifactStoreBucketName: !ImportValue MasterPipeline-ArtifactStoreBucketName
+        PipelineName: haulyshop-order-service
+        ProjectName: haulyshop-order-service
+        PipelineDescription: haulyshop-order-service
+        PipelineBuildSpecFileName: haulyshop-order-service-BuildSpec.yaml
+        PipelineStackName: haulyshop-order-service-Stack
+        PathRole: /
+        PipelineChangeSetName: haulyshop-order-service-ChangeSet
+        PipelineOutputFileName: haulyshop-order-service-Output.yaml
+        GitHubRepo: haulyshop-order-service
+        GitHubOwner: Andrew971
+        GitHubBranch: master
+        GitHubToken: !Ref GitHubToken
+        
+
+  ProductServicePipeline: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./codePipeline/codePipeline-github-product-service.yaml
+      Parameters: 
+        KMSKeyArn: !ImportValue MasterPipeline-KMSKeyArn
+        KMSKeyID: !ImportValue MasterPipeline-KMSKeyLogicalId
+        ArtifactStoreBucketName: !ImportValue MasterPipeline-ArtifactStoreBucketName
+        PipelineName: haulyshop-product-service
+        ProjectName: haulyshop-product-service
+        PipelineDescription: haulyshop-product-service
+        PipelineBuildSpecFileName: haulyshop-product-service-BuildSpec.yaml
+        PipelineStackName: haulyshop-product-service-Stack
+        PathRole: /
+        PipelineChangeSetName: haulyshop-product-service-ChangeSet
+        PipelineOutputFileName: haulyshop-product-service-Output.yaml
+        GitHubRepo: haulyshop-product-service
+        GitHubOwner: Andrew971
+        GitHubBranch: master
+        GitHubToken: !Ref GitHubToken
+
+  UserManagementServicePipeline: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./codePipeline/codePipeline-github-user-service.yaml.yaml
+      Parameters: 
+        KMSKeyArn: !ImportValue MasterPipeline-KMSKeyArn
+        KMSKeyID: !ImportValue MasterPipeline-KMSKeyLogicalId
+        ArtifactStoreBucketName: !ImportValue MasterPipeline-ArtifactStoreBucketName
+        PipelineName: haulyshop-user-service
+        ProjectName: haulyshop-user-service
+        PipelineDescription: haulyshop-user-service
+        PipelineBuildSpecFileName: haulyshop-user-service-BuildSpec.yaml
+        PipelineStackName: haulyshop-user-service-Stack
+        PathRole: /
+        PipelineChangeSetName: haulyshop-user-service-ChangeSet
+        PipelineOutputFileName: haulyshop-user-service-Output.yaml
+        GitHubRepo: haulyshop-user-management-service
+        GitHubOwner: Andrew971
+        GitHubBranch: master
+        GitHubToken: !Ref GitHubToken

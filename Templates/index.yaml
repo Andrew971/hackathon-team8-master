@@ -26,6 +26,11 @@ Parameters:
     NoEcho: true
 Resources: 
 
+  AuthenticationService: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./Authentication/index.yaml
+
   WebClientPipeline: 
     Type: AWS::CloudFormation::Stack
     Properties: 
@@ -36,24 +41,35 @@ Resources:
         ArtifactStoreBucketName: !Ref ArtifactStoreBucketName
         GitHubToken: !Ref GitHubToken
         GitHubOwner: !Ref GitHubOwner
-        
-  # BackendPipeline: 
-  #   Type: AWS::CloudFormation::Stack
-  #   Properties: 
-  #     TemplateURL: ./CodePipeline/textras-backend-architecture.yaml
-  #     Parameters: 
-  #       KMSKeyArn: !Ref KMSKeyArn
-  #       KMSKeyID: !Ref KMSKeyID
-  #       ArtifactStoreBucketName: !Ref ArtifactStoreBucketName
-  #       PipelineName: textras-backend-architecture
-  #       ProjectName: textras-backend-architecture
-  #       PipelineDescription: textras-backend-architecture
-  #       PipelineBuildSpecFileName: textras-backend-architecture-buildSpec.yaml
-  #       PipelineStackName: textras-backend-architecture-Stack
-  #       PathRole: /
-  #       PipelineChangeSetName: textras-backend-architecture-changeSet
-  #       PipelineOutputFileName: textras-backend-architecture-output.yaml
-  #       GitHubRepo: textras-backend-architecture
-  #       GitHubOwner: !Ref GitHubOwner
-  #       GitHubBranch: master
-  #       GitHubToken: !Ref GitHubToken
+        PRODUCT_API: test
+        ORDER_API: test
+        USER_API: test
+        COGNITO_POOL_ID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
+        COGNITO__CLIENT_POOL_ID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
+
+
+Outputs:
+  AuthenticationTopicArn:
+    Value: !GetAtt AuthenticationService.Outputs.AuthenticationTopicArn
+    Export:
+      Name: !Sub ${AWS::StackName}-AuthenticationTopicArn
+  UserPoolLogicalId:
+    Value: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
+    Export:
+      Name: !Sub ${AWS::StackName}-UserPoolLogicalId
+  UserPoolLogicalClientId:
+    Value: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
+    Export:
+      Name: !Sub ${AWS::StackName}-UserPoolLogicalClientId
+  UserPoolProviderName:
+    Value: !GetAtt AuthenticationService.Outputs.UserPoolProviderName
+    Export:
+      Name: !Sub ${AWS::StackName}-UserPoolProviderName
+  UserPoolProviderURL:
+    Value: !GetAtt AuthenticationService.Outputs.UserPoolProviderURL
+    Export:
+      Name: !Sub ${AWS::StackName}-UserPoolProviderURL
+  UserPoolArn:
+    Value: !GetAtt AuthenticationService.Outputs.UserPoolArn 
+    Export:
+      Name: !Sub ${AWS::StackName}-UserPoolArn

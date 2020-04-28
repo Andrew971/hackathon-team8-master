@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Push Notification Service.
+# Parameters:
+#   # GitHubToken:
+#   #   Description: The GitHub repository name
+#   #   Type: String
+#   #   NoEcho: true
+Resources: 
+
+  CognitoService: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./cognito-userPool.yaml
+      Parameters: 
+        UserPoolName: Team8-pool
+        AutoVerifiedAttributes: email
+        UsernameAttributes: email
+        FunctionName: CognitoPostConfirmationLambda
+        FunctionDescription: Cognito Post confirmation lambda
+        FunctionHandler: index.handler
+        FunctionMemorySize: '128'
+        FunctionRuntimeVersion: nodejs12.x
+        FunctionTimeout: '30'
+        ServiceTag: Authentication-service
+        ApplicationTag: team8
+        PathRole: /lambda/
+        TopicName: CognitoTopic 
+        ClientName: Team8-webapp
+        ExplicitAuthFlows: ALLOW_USER_PASSWORD_AUTH
+
+Outputs:
+  AuthenticationTopicArn:
+    Value: !GetAtt CognitoService.Outputs.AuthenticationTopicArn
+  UserPoolLogicalId:
+    Value: !GetAtt CognitoService.Outputs.UserPoolLogicalId
+  UserPoolLogicalClientId:
+    Value: !GetAtt CognitoService.Outputs.UserPoolLogicalClientId
+  UserPoolProviderName:
+    Value: !GetAtt CognitoService.Outputs.UserPoolProviderName
+  UserPoolProviderURL:
+    Value: !GetAtt CognitoService.Outputs.UserPoolProviderURL
+  UserPoolArn:
+    Value: !GetAtt CognitoService.Outputs.UserPoolArn 

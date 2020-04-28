@@ -16,11 +16,6 @@ Parameters:
     Description: Name the bucket used for storing the Pipeline Artifacts.
     MaxLength: 50
     MinLength: 5
-  WebsiteBucketName:
-    Type: String
-    Description: Name the bucket used for storing the Pipeline Artifacts.
-    MaxLength: 50
-    MinLength: 5
   PipelineName:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
@@ -41,23 +36,11 @@ Parameters:
     Default: /
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
-  PRODUCT_API:
+  PipelineChangeSetName:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
-  ORDER_API:
-    Default: outPutfile.yaml
-    Description: The name for the project associated with this pipeline (used to namespace resources)
-    Type: String
-  USER_API:
-    Default: generic-project-name
-    Description: The name for the project associated with this pipeline (used to namespace resources)
-    Type: String
-  COGNITO_POOL_ID:
-    Default: outPutfile.yaml
-    Description: The name for the project associated with this pipeline (used to namespace resources)
-    Type: String
-  COGNITO__CLIENT_POOL_ID:
+  PipelineOutputFileName:
     Default: outPutfile.yaml
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
@@ -95,7 +78,6 @@ Metadata:
           default: "Bucket Settings"
         Parameters:
           - ArtifactStoreBucketName
-          - WebsiteBucketName
       - Label:
           default: "CodePipeline Settings"
         Parameters:
@@ -144,18 +126,6 @@ Resources:
           Value: !Ref ArtifactStoreBucketName
         - Name: KMS_KEY_ID
           Value: !Ref KMSKeyID
-        - Name: PRODUCT_API
-          Value: !Ref PRODUCT_API
-        - Name: ORDER_API
-          Value: !Ref ORDER_API
-        - Name: USER_API
-          Value: !Ref USER_API
-        - Name: COGNITO_REGION
-          Value: !Ref AWS::Region
-        - Name: COGNITO_POOL_ID
-          Value: !Ref COGNITO_POOL_ID
-        - Name: COGNITO__CLIENT_POOL_ID
-          Value: !Ref COGNITO__CLIENT_POOL_ID
       Source: 
         BuildSpec: !Ref PipelineBuildSpecFileName
         Type: CODEPIPELINE
@@ -249,17 +219,39 @@ Resources:
               OutputArtifacts:
                 - Name: !Sub ${ProjectName}-Build
               RunOrder: 1
-        - Name: Deploy
+        - Name: Validate
           Actions:
             - Name: !Sub ${ProjectName}-ChangeSet
               ActionTypeId:
                 Category: Deploy
                 Owner: AWS
-                Provider: S3
+                Provider: CloudFormation
                 Version: '1'
               Configuration:
-                BucketName: !Ref WebsiteBucketName
-                Extract: true
+                ActionMode: CHANGE_SET_REPLACE
+                StackName: !Ref PipelineStackName
+                Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                ChangeSetName: !Ref PipelineChangeSetName
+                RoleArn: !GetAtt LambdaExecutionIAMRole.Arn
+                TemplatePath: !Sub ${ProjectName}-Build::${PipelineOutputFileName}
+              InputArtifacts:
+                - Name: !Sub ${ProjectName}-Build
+              RunOrder: 1
+        - Name: Deploy
+          Actions:
+            - Name: !Sub ${ProjectName}-Deploy
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: '1'
+              Configuration:
+                ActionMode: CHANGE_SET_EXECUTE
+                StackName: !Ref PipelineStackName
+                ChangeSetName: !Ref PipelineChangeSetName
+                OutputFileName: !Sub ${ProjectName}-Output
+                TemplatePath: !Sub ${ProjectName}-Build::${PipelineOutputFileName}
+                RoleArn: !GetAtt LambdaExecutionIAMRole.Arn
               InputArtifacts:
                 - Name: !Sub ${ProjectName}-Build
               RunOrder: 1
@@ -342,6 +334,8 @@ Resources:
                 - sqs:*
                 - ecs:*
                 - logs:* 
+                - cognito-idp:*
+                - cognito-identity:*
                 - dynamodb:*
                 - lambda:*
                 - cloudfront:*
@@ -413,6 +407,8 @@ Resources:
                 - sns:*
                 - cloudformation:*
                 - rds:*
+                - cognito-idp:*
+                - cognito-identity:*
                 - sqs:*
                 - ecs:*
                 - logs:* 
