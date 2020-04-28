@@ -12,7 +12,7 @@ async function recordProcessor(event) {
     } = event
 
     const {
-      userAttributes = null,
+      userAttributes,
     } = request
 
     console.log({ userAttributes })
