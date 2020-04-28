@@ -15,6 +15,10 @@ Parameters:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
+  UserResource:
+    Default: generic-project-name
+    Description: The name for the project associated with this pipeline (used to namespace resources)
+    Type: String
   CognitoClientID:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
@@ -265,12 +269,14 @@ Resources:
                         "ApiLogicalId": "${ApiLogicalId}",
                         "ApiRootResource": "${ApiRootResource}",
                         "AuthorizerLogicalId": "${AuthorizerLogicalId}",
+                        "UserResource": "${UserResource}",
                         "CognitoPoolID": "${CognitoPoolID}",
                         "CognitoClientID": "${CognitoClientID}"
                       }
                   - GitHubToken: !Ref GitHubToken
                     GitHubOwner: !Ref GitHubOwner
                     AuthenticationTopicArn: !Ref AuthenticationTopicArn
+                    UserResource: !Ref UserResource
                     ApiLogicalId: !Ref ApiLogicalId
                     ApiRootResource: !Ref ApiRootResource
                     AuthorizerLogicalId: !Ref AuthorizerLogicalId

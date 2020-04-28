@@ -24,6 +24,10 @@ Parameters:
     Type: String
     Description: Name the bucket used for storing the Pipeline Artifacts.
     NoEcho: true
+  BackendAPI:
+    Default: generic-project-name
+    Description: The name for the project associated with this pipeline (used to namespace resources)
+    Type: String
   ProductAPI:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
@@ -75,6 +79,7 @@ Resources:
         GitHubBranch: master
         GitHubToken: !Ref GitHubToken
         WebsiteBucketName: !GetAtt WebAppBucket.Outputs.S3BucketName
+        BackendAPI: !Ref BackendAPI
         ProductAPI: !Ref ProductAPI
         OrderAPI: !Ref OrderAPI
         UserAPI: !Ref UserAPI

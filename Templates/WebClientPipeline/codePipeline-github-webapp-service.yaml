@@ -41,6 +41,10 @@ Parameters:
     Default: /
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
+  BackendAPI:
+    Default: generic-project-name
+    Description: The name for the project associated with this pipeline (used to namespace resources)
+    Type: String
   ProductAPI:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
@@ -144,6 +148,8 @@ Resources:
           Value: !Ref ArtifactStoreBucketName
         - Name: KMS_KEY_ID
           Value: !Ref KMSKeyID
+        - Name: BACKEND_API
+          Value: !Ref BackendAPI
         - Name: PRODUCT_API
           Value: !Ref ProductAPI
         - Name: ORDER_API

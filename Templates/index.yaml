@@ -47,7 +47,8 @@ Resources:
         AuthorizerFunctionMemorySize: "128"
         AuthorizerFunctionRuntimeVersion: nodejs12.x
         AuthorizerFunctionTimeout: "10"
-
+        CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
+        CognitoClientID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
         ServiceTag: Api Service
         ApplicationTag: Backend
         ApiTypeTag: RestApi
@@ -66,6 +67,7 @@ Resources:
         ArtifactStoreBucketName: !Ref ArtifactStoreBucketName
         GitHubToken: !Ref GitHubToken
         GitHubOwner: !Ref GitHubOwner
+        BackendAPI: test
         # BackendAPI: !Sub
         #   - https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${RestApiStage}
         #   - RestApi: !GetAtt RestApi.Outputs.ApiLogicalId 
@@ -99,6 +101,7 @@ Resources:
         AuthenticationTopicArn: !GetAtt AuthenticationService.Outputs.AuthenticationTopicArn 
         ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId 
         ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
+        UserResource: !GetAtt RestApi.Outputs.UserResource 
         AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
         CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
         CognitoClientID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
@@ -126,6 +129,7 @@ Resources:
         AuthenticationTopicArn: !GetAtt AuthenticationService.Outputs.AuthenticationTopicArn 
         ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId 
         ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
+        UserResource: !GetAtt RestApi.Outputs.UserResource 
         AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
         CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
         CognitoClientID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
@@ -153,6 +157,7 @@ Resources:
         ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId
         AuthenticationTopicArn: !GetAtt AuthenticationService.Outputs.AuthenticationTopicArn  
         ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
+        UserResource: !GetAtt RestApi.Outputs.UserResource 
         AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
         CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
         CognitoClientID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
@@ -182,6 +187,7 @@ Resources:
         GitHubToken: !Ref GitHubToken
         ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId 
         ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
+        UserResource: !GetAtt RestApi.Outputs.UserResource 
         AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
 
 Outputs:
