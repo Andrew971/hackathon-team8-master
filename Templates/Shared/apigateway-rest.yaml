@@ -343,8 +343,8 @@ Outputs:
   # DeploymentLogicalId:
   #   Value: !Ref RestApiDeploymentV1
 
-  StageLogicalId:
-    Value: !Ref RestApiStage
+  # StageLogicalId:
+  #   Value: !Ref RestApiStage
 
   AuthorizerLogicalId:
     Value: !Ref Authorizer
