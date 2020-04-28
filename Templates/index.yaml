@@ -134,6 +134,27 @@ Resources:
         GitHubOwner: !Ref GitHubOwner
         GitHubBranch: master
         GitHubToken: !Ref GitHubToken
+        
+  BotServicePipeline: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./CodePipeline/codePipeline-github-bot-service.yaml
+      Parameters: 
+        KMSKeyArn: !Ref KMSKeyArn
+        KMSKeyID: !Ref KMSKeyID
+        ArtifactStoreBucketName:  !Ref ArtifactStoreBucketName
+        PipelineName: team8-bot-service
+        ProjectName: team8-bot-service
+        PipelineDescription: team8-bot-service
+        PipelineBuildSpecFileName: team8-bot-service-buildSpec.yaml
+        PipelineStackName: team8-bot-service-Stack
+        PathRole: /
+        PipelineChangeSetName: team8-bot-service-changeSet
+        PipelineOutputFileName: team8-bot-service-output.yaml
+        GitHubRepo: hackathon-team8-bot-service
+        GitHubOwner: !Ref GitHubOwner
+        GitHubBranch: master
+        GitHubToken: !Ref GitHubToken
 
 Outputs:
   AuthenticationTopicArn:
