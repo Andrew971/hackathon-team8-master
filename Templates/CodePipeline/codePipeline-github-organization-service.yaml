@@ -40,6 +40,10 @@ Parameters:
     Default: buildspec.yaml
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
+  AuthenticationTopicArn:
+    Default: /
+    Description: The name for the project associated with this pipeline (used to namespace resources)
+    Type: String
   PathRole:
     Default: /
     Description: The name for the project associated with this pipeline (used to namespace resources)
@@ -257,6 +261,7 @@ Resources:
                       {
                         "GitHubToken": "${GitHubToken}",
                         "GitHubOwner": "${GitHubOwner}",
+                        "AuthenticationTopicArn": "${AuthenticationTopicArn}",
                         "ApiLogicalId": "${ApiLogicalId}",
                         "ApiRootResource": "${ApiRootResource}",
                         "AuthorizerLogicalId": "${AuthorizerLogicalId}",
@@ -265,6 +270,7 @@ Resources:
                       }
                   - GitHubToken: !Ref GitHubToken
                     GitHubOwner: !Ref GitHubOwner
+                    AuthenticationTopicArn: !Ref AuthenticationTopicArn
                     ApiLogicalId: !Ref ApiLogicalId
                     ApiRootResource: !Ref ApiRootResource
                     AuthorizerLogicalId: !Ref AuthorizerLogicalId

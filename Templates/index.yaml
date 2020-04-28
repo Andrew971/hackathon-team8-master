@@ -96,6 +96,7 @@ Resources:
         GitHubOwner: !Ref GitHubOwner
         GitHubBranch: master
         GitHubToken: !Ref GitHubToken
+        AuthenticationTopicArn: !GetAtt AuthenticationService.Outputs.AuthenticationTopicArn 
         ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId 
         ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
         AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
@@ -122,6 +123,7 @@ Resources:
         GitHubOwner: !Ref GitHubOwner
         GitHubBranch: master
         GitHubToken: !Ref GitHubToken
+        AuthenticationTopicArn: !GetAtt AuthenticationService.Outputs.AuthenticationTopicArn 
         ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId 
         ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
         AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
@@ -148,7 +150,8 @@ Resources:
         GitHubOwner: !Ref GitHubOwner
         GitHubBranch: master
         GitHubToken: !Ref GitHubToken
-        ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId 
+        ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId
+        AuthenticationTopicArn: !GetAtt AuthenticationService.Outputs.AuthenticationTopicArn  
         ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
         AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
         CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
