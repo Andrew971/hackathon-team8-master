@@ -16,14 +16,14 @@ Parameters:
     Description: Name the bucket used for storing the Pipeline Artifacts.
     MaxLength: 50
     MinLength: 5
-  GitHubToken:
-      Type: AWS::SSM::Parameter::Value<String>
-      Default: 'textras-github-apikey' 
-      NoEcho: true
   GitHubOwner:
-      Type: AWS::SSM::Parameter::Value<String>
-      Default: 'textras-github-owner' 
-      NoEcho: true
+    Type: String
+    Description: Name the bucket used for storing the Pipeline Artifacts.
+    NoEcho: true
+  GitHubToken:
+    Type: String
+    Description: Name the bucket used for storing the Pipeline Artifacts.
+    NoEcho: true
 Resources: 
 
   WebAppBucket: 
