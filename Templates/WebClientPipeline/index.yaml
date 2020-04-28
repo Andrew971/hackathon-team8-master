@@ -68,8 +68,8 @@ Resources:
         PipelineBuildSpecFileName: hackathon-team8-web-pipeline-buildSpec.yaml
         PipelineStackName: hackathon-team8-web-pipeline-Stack
         PathRole: /
-        PipelineChangeSetName: hackathon-team8-web-pipeline-changeSet
-        PipelineOutputFileName: hackathon-team8-web-pipeline-output.yaml
+        # PipelineChangeSetName: hackathon-team8-web-pipeline-changeSet
+        # PipelineOutputFileName: hackathon-team8-web-pipeline-output.yaml
         GitHubRepo: hackathon-team8-web
         GitHubOwner: !Ref GitHubOwner
         GitHubBranch: master

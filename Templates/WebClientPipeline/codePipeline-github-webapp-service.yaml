@@ -109,9 +109,9 @@ Metadata:
           - ProjectName
           - PipelineDescription
           - PipelineBuildSpecFileName
-          - PipelineOutputFileName
+          # - PipelineOutputFileName
           - PipelineStackName
-          - PipelineChangeSetName
+          # - PipelineChangeSetName
 
       - Label:
           default: "GitHub Settings"
