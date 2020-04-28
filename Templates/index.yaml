@@ -100,8 +100,7 @@ Resources:
         ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
         AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
         CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
-        CognitoClientID: !GetAtt
-        AuthenticationService.Outputs.UserPoolLogicalClientId
+        CognitoClientID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
         
   OrganizationServicePipeline: 
     Type: AWS::CloudFormation::Stack
@@ -127,8 +126,7 @@ Resources:
         ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
         AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
         CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
-        CognitoClientID: !GetAtt
-        AuthenticationService.Outputs.UserPoolLogicalClientId
+        CognitoClientID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
         
   TeamServicePipeline: 
     Type: AWS::CloudFormation::Stack
@@ -154,8 +152,7 @@ Resources:
         ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
         AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
         CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
-        CognitoClientID: !GetAtt
-        AuthenticationService.Outputs.UserPoolLogicalClientId
+        CognitoClientID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
         
   BotServicePipeline: 
     Type: AWS::CloudFormation::Stack
