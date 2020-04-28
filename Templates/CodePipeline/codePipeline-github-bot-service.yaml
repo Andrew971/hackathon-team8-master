@@ -147,7 +147,7 @@ Resources:
       Name: !Sub ${ProjectName}-Codebuild
       Description: !Ref PipelineDescription
       ServiceRole: !GetAtt CodeBuildRole.Arn
-      EncryptionKey: !Ref KMSKeyArn
+      EncryptionKey: !Ref KMSKeyArnRegional
       Artifacts: 
         Type: CODEPIPELINE
       Cache: 
