@@ -216,7 +216,7 @@ Resources:
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
-      artifactStores:
+      ArtifactStores:
         - ArtifactStore : 
             EncryptionKey: 
               Id: !Ref KMSKeyArn
