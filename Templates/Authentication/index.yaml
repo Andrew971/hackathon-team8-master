@@ -42,4 +42,4 @@ Outputs:
   UserPoolArn:
     Value: !GetAtt CognitoService.Outputs.UserPoolArn 
   IdentityPoolLogicalId:
-    Value: !GetAtt CognitoService.Outputs.CognitoIdentityPool
+    Value: !GetAtt CognitoService.Outputs.IdentityPoolLogicalId
