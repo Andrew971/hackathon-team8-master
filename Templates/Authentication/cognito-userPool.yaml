@@ -261,7 +261,7 @@ Resources:
   IdentityPoolRoleAttachment: 
     Type: AWS::Cognito::IdentityPoolRoleAttachment 
     Properties: 
-      IdentityPoolId: !Ref IdentityPool
+      IdentityPoolId: !Ref CognitoIdentityPool
       Roles: 
         "authenticated": !GetAtt AuthenticatedRole.Arn 
         "unauthenticated": !GetAtt UnAuthenticatedRole.Arn 
