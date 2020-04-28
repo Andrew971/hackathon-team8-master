@@ -325,7 +325,7 @@ Resources:
         - Key: Resource
           Value: SNS publisher for Update Topic
   
-  FunctionVersionV5:
+  FunctionVersionV6:
     Type: AWS::Lambda::Version
     Properties:
       FunctionName: !Ref PostConfirmmationLambda
@@ -334,7 +334,7 @@ Resources:
   FunctionAlias:
     Type: AWS::Lambda::Alias
     Properties:
-      FunctionVersion: !GetAtt FunctionVersionV5.Version
+      FunctionVersion: !GetAtt FunctionVersionV6.Version
       FunctionName: !Ref PostConfirmmationLambda
       Name: !Sub ${FunctionName}-V1
       
