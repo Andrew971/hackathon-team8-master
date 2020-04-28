@@ -147,24 +147,24 @@ Resources:
   CognitoUserPoolClient: 
     Type: AWS::Cognito::UserPoolClient
     Properties:
-        ClientName: !Ref ClientName
-        PreventUserExistenceErrors: ENABLED
-        # RefreshTokenValidity: 3650
-        ExplicitAuthFlows: 
-          - !Ref ExplicitAuthFlows
-          - ALLOW_USER_SRP_AUTH
-          - ALLOW_REFRESH_TOKEN_AUTH
-        GenerateSecret: false
-        RefreshTokenValidity: 30
-        SupportedIdentityProviders:
-          - COGNITO
-          # - Facebook
-          # - Google
-        UserPoolId: !Ref CognitoUserPool
-        # WriteAttributes: 
-        #   - String
-        # ReadAttributes: 
-        #   - String 
+      ClientName: !Ref ClientName
+      PreventUserExistenceErrors: ENABLED
+      # RefreshTokenValidity: 3650
+      ExplicitAuthFlows: 
+        - !Ref ExplicitAuthFlows
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      GenerateSecret: false
+      RefreshTokenValidity: 30
+      SupportedIdentityProviders:
+        - COGNITO
+        - Facebook
+        - Google
+      UserPoolId: !Ref CognitoUserPool
+      # WriteAttributes: 
+      #   - String
+      # ReadAttributes: 
+      #   - String 
   CognitoIdentityPool:
     Type: AWS::Cognito::IdentityPool
     Properties:
