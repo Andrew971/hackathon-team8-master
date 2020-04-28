@@ -141,7 +141,7 @@ Resources:
         # PreSignUp: String
         # VerifyAuthChallengeResponse: String
       UserPoolTags: 
-        projectName: haulyShop
+        projectName: !Sub ${UserPoolName}
         technology: Authentication
 
   CognitoUserPoolClient: 
@@ -192,6 +192,80 @@ Resources:
       #     RoleArn: String
       # CognitoEvents: 
       #   String: String
+  AuthenticatedRole: 
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: Allow
+            Principal: 
+              Service: 
+              - lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies: 
+        - PolicyName: !Sub ${UserPoolName}-Identity-AuthenticatedRole-policy
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - Effect: Allow
+                Action: 
+                  - lex:PostContent
+                  - lex:PostText
+                Resource: "*"
+              - Effect: Allow
+                Action: 
+                  - polly:DescribeVoices
+                  - polly:GetLexicon
+                  - polly:GetSpeechSynthesisTask
+                  - polly:ListLexicons
+                  - polly:ListSpeechSynthesisTasks
+                  - polly:SynthesizeSpeech
+                Resource: "*"
+      Path: /
+      RoleName: !Sub ${UserPoolName}-Identity-AuthenticatedRole-role
+
+  UnAuthenticatedRole: 
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: Allow
+            Principal: 
+              Service: 
+              - lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies: 
+        - PolicyName: !Sub ${UserPoolName}-Identity-UnAuthenticatedRole-policy
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement: 
+              - Effect: Deny
+                Action: 
+                  - polly:DescribeVoices
+                  - polly:GetLexicon
+                  - polly:GetSpeechSynthesisTask
+                  - polly:ListLexicons
+                  - polly:ListSpeechSynthesisTasks
+                  - polly:SynthesizeSpeech
+                Resource: "*"
+              - Effect: Deny
+                Action: 
+                  - lex:PostContent
+                  - lex:PostText
+                Resource: "*"
+      Path: /
+      RoleName: !Sub ${UserPoolName}-Identity-UnAuthenticatedRole-role
+
+  IdentityPoolRoleAttachment: 
+    Type: AWS::Cognito::IdentityPoolRoleAttachment 
+    Properties: 
+      IdentityPoolId: !Ref IdentityPool
+      Roles: 
+        "authenticated": !GetAtt AuthenticatedRole.Arn 
+        "unauthenticated": !GetAtt UnAuthenticatedRole.Arn 
+      
   Topic:
     Type: AWS::SNS::Topic
     Properties: 
