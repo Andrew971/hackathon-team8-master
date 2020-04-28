@@ -171,9 +171,6 @@ Resources:
       IdentityPoolName: !Sub ${UserPoolName}-IdentityPool
       AllowUnauthenticatedIdentities: false
       DeveloperProviderName: !Sub ${UserPoolName}-Provider
-      SupportedLoginProviders: 
-        Facebook: graph.facebook.com
-        Google: accounts.google.com
       CognitoIdentityProviders: 
         - ClientId: !Ref CognitoUserPoolClient
           ProviderName: !GetAtt CognitoUserPool.ProviderName
@@ -197,12 +194,17 @@ Resources:
     Properties: 
       AssumeRolePolicyDocument: 
         Version: "2012-10-17"
-        Statement: 
-          - Effect: Allow
+        Statement:
+          - Effect: "Allow"
             Principal: 
-              Service: 
-              - lambda.amazonaws.com
-            Action: sts:AssumeRole
+              Federated: "cognito-identity.amazonaws.com"
+            Action: 
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals: 
+                "cognito-identity.amazonaws.com:aud": !Ref CognitoIdentityPool
+              "ForAnyValue:StringLike":
+                "cognito-identity.amazonaws.com:amr": authenticated
       Policies: 
         - PolicyName: !Sub ${UserPoolName}-Identity-AuthenticatedRole-policy
           PolicyDocument: 
@@ -218,6 +220,10 @@ Resources:
                 Action: 
                   - lex:PostContent
                   - lex:PostText
+                Resource: "*"
+              - Effect: "Allow"
+                Action:
+                  - "lambda:InvokeFunction"
                 Resource: "*"
               - Effect: Allow
                 Action: 
@@ -236,12 +242,17 @@ Resources:
     Properties: 
       AssumeRolePolicyDocument: 
         Version: "2012-10-17"
-        Statement: 
-          - Effect: Allow
+        Statement:
+          - Effect: "Allow"
             Principal: 
-              Service: 
-              - lambda.amazonaws.com
-            Action: sts:AssumeRole
+              Federated: "cognito-identity.amazonaws.com"
+            Action: 
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals: 
+                "cognito-identity.amazonaws.com:aud": !Ref CognitoIdentityPool
+              "ForAnyValue:StringLike":
+                "cognito-identity.amazonaws.com:amr": unauthenticated
       Policies: 
         - PolicyName: !Sub ${UserPoolName}-Identity-UnAuthenticatedRole-policy
           PolicyDocument: 
