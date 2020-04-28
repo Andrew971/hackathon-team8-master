@@ -21,7 +21,7 @@ Resources:
         FunctionMemorySize: '128'
         FunctionRuntimeVersion: nodejs12.x
         FunctionTimeout: '30'
-        ServiceTag: Team8-Authentication-service
+        ServiceTag: Authentication-service
         ApplicationTag: team8
         PathRole: /lambda/
         TopicName: Team8-CognitoTopic 
