@@ -48,6 +48,7 @@ Resources:
         COGNITO__CLIENT_POOL_ID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
 
 
+
 Outputs:
   AuthenticationTopicArn:
     Value: !GetAtt AuthenticationService.Outputs.AuthenticationTopicArn
