@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Push Notification Service.
+Parameters:
+  KMSKeyArn:
+    Type: String
+    Description: Name the bucket used for storing the Pipeline Artifacts.
+    MaxLength: 350
+    MinLength: 5
+  KMSKeyID:
+    Type: String
+    Description: Name the bucket used for storing the Pipeline Artifacts.
+    MaxLength: 350
+    MinLength: 5
+  ArtifactStoreBucketName:
+    Type: String
+    Description: Name the bucket used for storing the Pipeline Artifacts.
+    MaxLength: 50
+    MinLength: 5
+  GitHubToken:
+      Type: AWS::SSM::Parameter::Value<String>
+      Default: 'textras-github-apikey' 
+      NoEcho: true
+  GitHubOwner:
+      Type: AWS::SSM::Parameter::Value<String>
+      Default: 'textras-github-owner' 
+      NoEcho: true
+Resources: 
+
+  WebAppBucket: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./team8-webapp.yaml
+      Parameters: 
+        BucketName: haulyshop.com
+
+
+  WebAppDeployPipeline: 
+    Type: AWS::CloudFormation::Stack
+    Properties: 
+      TemplateURL: ./codePipeline-github-webapp-service.yaml
+      Parameters: 
+        KMSKeyArn: !Ref KMSKeyArn
+        KMSKeyID: !Ref KMSKeyID
+        ArtifactStoreBucketName: !Ref ArtifactStoreBucketName
+        PipelineName: hackathon-team8-web-pipeline
+        ProjectName: hackathon-team8-web-pipeline
+        PipelineDescription: hackathon-team8-web-pipeline
+        PipelineBuildSpecFileName: hackathon-team8-web-pipeline-buildSpec.yaml
+        PipelineStackName: hackathon-team8-web-pipeline-Stack
+        PathRole: /
+        PipelineChangeSetName: hackathon-team8-web-pipeline-changeSet
+        PipelineOutputFileName: hackathon-team8-web-pipeline-output.yaml
+        GitHubRepo: hackathon-team8-web
+        GitHubOwner: !Ref GitHubOwner
+        GitHubBranch: master
+        GitHubToken: !Ref GitHubToken
+        WebsiteBucketName: !GetAtt WebAppBucket.Outputs.S3BucketName

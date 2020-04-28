@@ -1,0 +1,123 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: 'S3 Bucket config for website hosting'
+Parameters:
+  BucketName:
+    Type: String
+    Description: Buket Name for website config( eg exemple.com).
+    MaxLength: 50
+    MinLength: 5
+Resources:
+  WebsiteS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: !Ref BucketName
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+        # RoutingRules:
+        # - RoutingRuleCondition:
+        #     HttpErrorCodeReturnedEquals: '404'
+        #     KeyPrefixEquals: out1/
+        #   RedirectRule:
+        #     HostName: ec2-11-22-333-44.compute-1.amazonaws.com
+        #     ReplaceKeyPrefixWith: report-404/    
+      Tags:
+        - Key: Application
+          Value: HaulyShop-webapp
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties: 
+      Bucket: !Ref WebsiteS3Bucket
+      PolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+        - Sid: "PublicReadGetObject"
+          Effect: "Allow"
+          Principal: "*"
+          Action: 
+          - s3:GetObject
+          Resource: 
+          - !Sub "arn:aws:s3:::${WebsiteS3Bucket}/*"
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig: 
+        # Aliases:
+        #   - andrewsordier.com
+        Comment: Cloudfront for HaulyShop Web App
+        DefaultCacheBehavior:
+          ForwardedValues:
+            QueryString: false
+          AllowedMethods:
+            - DELETE
+            - GET
+            - HEAD
+            - OPTIONS 
+            - PATCH 
+            - POST 
+            - PUT
+          CachedMethods:
+            - GET
+            - HEAD
+            - OPTIONS 
+          Compress: false
+          DefaultTTL: 86400
+          MaxTTL: 31536000
+          MinTTL: 0
+          SmoothStreaming: false
+          TargetOriginId: !Ref WebsiteS3Bucket
+          ViewerProtocolPolicy : "redirect-to-https"
+        DefaultRootObject: index.html
+        Enabled: true
+        HttpVersion: http2
+        IPV6Enabled: true
+        Origins:
+          - DomainName: !GetAtt WebsiteS3Bucket.DomainName
+            Id: !Ref WebsiteS3Bucket
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}"
+        # ViewerCertificate:
+        #   AcmCertificateArn: !Ref SSLCertificate
+        #   MinimumProtocolVersion: "TLSv1.1_2016"
+        #   SslSupportMethod: "sni-only"
+      Tags: 
+        - Key: Application
+          Value: Webapp
+        - Key: Distribution
+          Value: Coudfront HTTPS
+          
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig: 
+        Comment: Cloufront Origin Access Identity Config
+
+Outputs:
+  WebsiteURL:
+    Value: !GetAtt [WebsiteS3Bucket, WebsiteURL]
+    Description: URL for website hosted on S3
+    Export:
+      Name: !Sub "${AWS::StackName}-WebsiteURL"
+  DNSDomainName:
+    Value: !Join ['', ['https://', !GetAtt [WebsiteS3Bucket, DomainName]]]
+    Description: Domain name S3 bucket
+    Export:
+      Name: !Sub "${AWS::StackName}-DNSDomainName"
+  S3Bucket:
+    Value: !GetAtt [WebsiteS3Bucket, DomainName]
+    Description: Domain name S3 bucket
+    Export:
+      Name: !Sub "${AWS::StackName}-S3DomainName"
+  S3BucketName:
+    Value: !Ref WebsiteS3Bucket
+    Description: Bucket name 
+    Export:
+      Name: !Sub "${AWS::StackName}-S3BucketName"
+  # Cloudfront:
+  #   Value: !GetAtt [CloudFrontDistribution, DomainName]
+  #   Description: Cloudfront DomainName
+  #   Export:
+  #     Name: !Sub "${AWS::StackName}-CloudFrontDomainName"
