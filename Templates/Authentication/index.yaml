@@ -15,16 +15,16 @@ Resources:
         UserPoolName: Team8-pool
         AutoVerifiedAttributes: email
         UsernameAttributes: email
-        FunctionName: CognitoPostConfirmationLambda
+        FunctionName: Team8-CognitoPostConfirmationLambda
         FunctionDescription: Cognito Post confirmation lambda
         FunctionHandler: index.handler
         FunctionMemorySize: '128'
         FunctionRuntimeVersion: nodejs12.x
         FunctionTimeout: '30'
-        ServiceTag: Authentication-service
+        ServiceTag: Team8-Authentication-service
         ApplicationTag: team8
         PathRole: /lambda/
-        TopicName: CognitoTopic 
+        TopicName: Team8-CognitoTopic 
         ClientName: Team8-webapp
         ExplicitAuthFlows: ALLOW_USER_PASSWORD_AUTH
 
