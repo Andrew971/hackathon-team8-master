@@ -41,23 +41,23 @@ Parameters:
     Default: /
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
-  PRODUCT_API:
+  ProductAPI:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
-  ORDER_API:
+  OrderAPI:
     Default: outPutfile.yaml
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
-  USER_API:
+  UserAPI:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
-  COGNITO_POOL_ID:
+  CognitoPoolID:
     Default: outPutfile.yaml
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
-  COGNITO__CLIENT_POOL_ID:
+  CognitoClientID:
     Default: outPutfile.yaml
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
@@ -145,17 +145,17 @@ Resources:
         - Name: KMS_KEY_ID
           Value: !Ref KMSKeyID
         - Name: PRODUCT_API
-          Value: !Ref PRODUCT_API
+          Value: !Ref ProductAPI
         - Name: ORDER_API
-          Value: !Ref ORDER_API
+          Value: !Ref OrderAPI
         - Name: USER_API
-          Value: !Ref USER_API
+          Value: !Ref UserAPI
         - Name: COGNITO_REGION
           Value: !Ref AWS::Region
         - Name: COGNITO_POOL_ID
-          Value: !Ref COGNITO_POOL_ID
+          Value: !Ref CognitoPoolID
         - Name: COGNITO__CLIENT_POOL_ID
-          Value: !Ref COGNITO__CLIENT_POOL_ID
+          Value: !Ref CognitoClientID
       Source: 
         BuildSpec: !Ref PipelineBuildSpecFileName
         Type: CODEPIPELINE

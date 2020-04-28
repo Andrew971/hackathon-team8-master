@@ -66,11 +66,11 @@ Resources:
         ArtifactStoreBucketName: !Ref ArtifactStoreBucketName
         GitHubToken: !Ref GitHubToken
         GitHubOwner: !Ref GitHubOwner
-        PRODUCT_API: test
-        ORDER_API: test
-        USER_API: test
-        COGNITO_POOL_ID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
-        COGNITO__CLIENT_POOL_ID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
+        ProductAPI: test
+        OrderAPI: test
+        UserAPI: test
+        CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
+        CognitoClientID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
 
   ActivityServicePipeline: 
     Type: AWS::CloudFormation::Stack

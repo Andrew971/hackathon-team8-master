@@ -24,23 +24,23 @@ Parameters:
     Type: String
     Description: Name the bucket used for storing the Pipeline Artifacts.
     NoEcho: true
-  PRODUCT_API:
+  ProductAPI:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
-  ORDER_API:
+  OrderAPI:
     Default: outPutfile.yaml
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
-  USER_API:
+  UserAPI:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
-  COGNITO_POOL_ID:
+  CognitoPoolID:
     Default: outPutfile.yaml
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
-  COGNITO__CLIENT_POOL_ID:
+  CognitoClientID:
     Default: outPutfile.yaml
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
@@ -75,8 +75,8 @@ Resources:
         GitHubBranch: master
         GitHubToken: !Ref GitHubToken
         WebsiteBucketName: !GetAtt WebAppBucket.Outputs.S3BucketName
-        PRODUCT_API: !Ref PRODUCT_API
-        ORDER_API: !Ref ORDER_API
-        USER_API: !Ref USER_API
-        COGNITO_POOL_ID: !Ref COGNITO_POOL_ID
-        COGNITO__CLIENT_POOL_ID: !Ref COGNITO__CLIENT_POOL_ID
+        ProductAPI: !Ref ProductAPI
+        OrderAPI: !Ref OrderAPI
+        UserAPI: !Ref UserAPI
+        CognitoPoolID: !Ref CognitoPoolID
+        CognitoClientID: !Ref CognitoClientID
