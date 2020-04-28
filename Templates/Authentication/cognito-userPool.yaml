@@ -158,8 +158,8 @@ Resources:
       RefreshTokenValidity: 30
       SupportedIdentityProviders:
         - COGNITO
-        - Facebook
-        - Google
+        # - Facebook
+        # - Google
       UserPoolId: !Ref CognitoUserPool
       # WriteAttributes: 
       #   - String
