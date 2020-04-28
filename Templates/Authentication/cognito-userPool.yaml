@@ -176,7 +176,7 @@ Resources:
         Google: accounts.google.com
       CognitoIdentityProviders: 
         - ClientId: !Ref CognitoUserPoolClient
-          ProviderName: !Sub ${UserPoolName}-Provider
+          ProviderName: !GetAtt CognitoUserPool.ProviderName
           ServerSideTokenCheck: true
       # SamlProviderARNs: 
       #   - String
