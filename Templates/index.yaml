@@ -66,6 +66,10 @@ Resources:
         ArtifactStoreBucketName: !Ref ArtifactStoreBucketName
         GitHubToken: !Ref GitHubToken
         GitHubOwner: !Ref GitHubOwner
+        # BackendAPI: !Sub
+        #   - https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${RestApiStage}
+        #   - RestApi: !GetAtt RestApi.Outputs.ApiLogicalId 
+        #     RestApiStage: !GetAtt RestApi.Outputs.StageLogicalId
         ProductAPI: test
         OrderAPI: test
         UserAPI: test
@@ -92,7 +96,13 @@ Resources:
         GitHubOwner: !Ref GitHubOwner
         GitHubBranch: master
         GitHubToken: !Ref GitHubToken
-
+        ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId 
+        ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
+        AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
+        CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
+        CognitoClientID: !GetAtt
+        AuthenticationService.Outputs.UserPoolLogicalClientId
+        
   OrganizationServicePipeline: 
     Type: AWS::CloudFormation::Stack
     Properties: 
@@ -113,7 +123,13 @@ Resources:
         GitHubOwner: !Ref GitHubOwner
         GitHubBranch: master
         GitHubToken: !Ref GitHubToken
-
+        ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId 
+        ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
+        AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
+        CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
+        CognitoClientID: !GetAtt
+        AuthenticationService.Outputs.UserPoolLogicalClientId
+        
   TeamServicePipeline: 
     Type: AWS::CloudFormation::Stack
     Properties: 
@@ -134,15 +150,21 @@ Resources:
         GitHubOwner: !Ref GitHubOwner
         GitHubBranch: master
         GitHubToken: !Ref GitHubToken
+        ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId 
+        ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
+        AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
+        CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
+        CognitoClientID: !GetAtt
+        AuthenticationService.Outputs.UserPoolLogicalClientId
         
   BotServicePipeline: 
     Type: AWS::CloudFormation::Stack
     Properties: 
       TemplateURL: ./CodePipeline/codePipeline-github-bot-service.yaml
       Parameters: 
-        KMSKeyArn: !Ref KMSKeyArn
-        KMSKeyID: !Ref KMSKeyID
-        ArtifactStoreBucketName:  !Ref ArtifactStoreBucketName
+        KMSKeyArn: arn:aws:kms:us-east-1:998237141726:key/bb002d6c-941a-439f-81d8-95facc1dd12a	
+        KMSKeyID: bb002d6c-941a-439f-81d8-95facc1dd12a	
+        ArtifactStoreBucketName: team8-bot-service-artifact-store
         PipelineName: team8-bot-service
         ProjectName: team8-bot-service
         PipelineDescription: team8-bot-service
@@ -155,6 +177,9 @@ Resources:
         GitHubOwner: !Ref GitHubOwner
         GitHubBranch: master
         GitHubToken: !Ref GitHubToken
+        ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId 
+        ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
+        AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
 
 Outputs:
   AuthenticationTopicArn:
