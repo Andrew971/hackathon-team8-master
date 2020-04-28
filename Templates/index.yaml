@@ -159,11 +159,11 @@ Resources:
     Properties: 
       TemplateURL: ./CodePipeline/codePipeline-github-bot-service.yaml
       Parameters: 
-        KMSKeyArn: arn:aws:kms:us-east-1:998237141726:key/bb002d6c-941a-439f-81d8-95facc1dd12a	
-        KMSKeyID: bb002d6c-941a-439f-81d8-95facc1dd12a	
+        KMSKeyArn: arn:aws:kms:us-east-1:998237141726:key/bb002d6c-941a-439f-81d8-95facc1dd12a
+        KMSKeyID: bb002d6c-941a-439f-81d8-95facc1dd12a
         ArtifactStoreBucketName: team8-bot-service-artifact-store
-        KMSKeyArnRegional: !Ref KMSKeyArn	
-        KMSKeyIDRegional: !Ref KMSKeyID	
+        KMSKeyArnRegional: !Ref KMSKeyArn
+        KMSKeyIDRegional: !Ref KMSKeyID
         ArtifactStoreBucketNameRegional: !Ref ArtifactStoreBucketName
         PipelineName: team8-bot-service
         ProjectName: team8-bot-service
