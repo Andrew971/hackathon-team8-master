@@ -215,7 +215,7 @@ Resources:
       TemplateURL: ./rest-resource.yaml
       Parameters: 
         RestApiID: !Ref RestApi
-        ResourceID: !GetAtt UserResource.RootResourceId
+        ResourceID: !GetAtt UserResource.ApiResourceID
         ResourceName: "{userId}"
 
   Authorizer:
