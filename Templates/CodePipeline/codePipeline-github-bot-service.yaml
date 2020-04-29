@@ -297,7 +297,7 @@ Resources:
                         "AuthorizerLogicalId": "${AuthorizerLogicalId}",
                         "UserResource": "${UserResource}",
                         "CognitoPoolID": "${CognitoPoolID}",
-                        "BackendAPI": "${BackendAPI}"
+                        "BackendAPI": "${BackendAPI}",
                         "CognitoClientID": "${CognitoClientID}"
                       }
                   - GitHubToken: !Ref GitHubToken
