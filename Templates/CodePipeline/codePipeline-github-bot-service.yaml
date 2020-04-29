@@ -169,9 +169,9 @@ Resources:
         Type: LINUX_CONTAINER
         EnvironmentVariables:
         - Name: ARTIFACT_STORE
-          Value: !Ref ArtifactStoreBucketNameRegional
+          Value: !Ref ArtifactStoreBucketName
         - Name: KMS_KEY_ID
-          Value: !Ref KMSKeyArnRegional
+          Value: !Ref KMSKeyID
       Source: 
         BuildSpec: !Ref PipelineBuildSpecFileName
         Type: CODEPIPELINE
