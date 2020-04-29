@@ -557,7 +557,6 @@ Resources:
                 Resource: 
                   - !Ref KMSKeyArn
                   - !Ref KMSKeyArnRegional
-
       Path: !Ref PathRole
       RoleName: !Sub ${PipelineName}-role
 
