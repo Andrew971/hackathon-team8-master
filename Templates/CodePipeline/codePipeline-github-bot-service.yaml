@@ -274,6 +274,7 @@ Resources:
               OutputArtifacts:
                 - Name: !Sub ${ProjectName}-Build
               RunOrder: 1
+              Region: us-east-1
         - Name: Validate
           Actions:
             - Name: !Sub ${ProjectName}-ChangeSet
