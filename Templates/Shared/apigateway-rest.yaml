@@ -174,31 +174,31 @@ Resources:
                   - logs:FilterLogEvents
                 Resource: '*'
                 
-  # RestApiDeploymentV1:
-  #   Type: AWS::ApiGateway::Deployment
-  #   DeletionPolicy: Retain
-  #   Properties:
-  #     RestApiId: !Ref RestApi
-  #     Description: "First deployment"
+  RestApiDeploymentV1:
+    Type: AWS::ApiGateway::Deployment
+    DeletionPolicy: Retain
+    Properties:
+      RestApiId: !Ref RestApi
+      Description: "First deployment"
 
-  # RestApiStage:
-  #   Type: AWS::ApiGateway::Stage
-  #   Properties:
-  #     RestApiId: !Ref RestApi
-  #     StageName: !Ref StageName
-  #     DeploymentId: !Ref RestApiDeploymentV1
-  #     MethodSettings:
-  #       - CacheDataEncrypted: false
-  #         CacheTtlInSeconds: 3600
-  #         CachingEnabled: true
-  #         DataTraceEnabled: true
-  #         HttpMethod: '*'
-  #         LoggingLevel: INFO
-  #         ResourcePath: /*
-  #     Variables: 
-  #       JWT_TOKEN: "test"
-  #       COGNITO_POOL_ID: !Ref CognitoPoolID
-  #       COGNITO_CLIENT_ID: !Ref CognitoClientID
+  RestApiStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId: !Ref RestApi
+      StageName: !Ref StageName
+      DeploymentId: !Ref RestApiDeploymentV1
+      MethodSettings:
+        - CacheDataEncrypted: false
+          CacheTtlInSeconds: 3600
+          CachingEnabled: true
+          DataTraceEnabled: true
+          HttpMethod: '*'
+          LoggingLevel: INFO
+          ResourcePath: /*
+      Variables: 
+        JWT_TOKEN: "test"
+        COGNITO_POOL_ID: !Ref CognitoPoolID
+        COGNITO_CLIENT_ID: !Ref CognitoClientID
 
   UserResource: 
     Type: AWS::CloudFormation::Stack
@@ -359,19 +359,19 @@ Outputs:
   ApiLogicalId:
     Value: !Ref RestApi
 
-  # ApiV1EndpointUrl:
-  #   Value: !Sub https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${RestApiStage}
+  ApiV1EndpointUrl:
+    Value: !Sub https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${RestApiStage}
 
   ApiRootResource:
     Value: !GetAtt RestApi.RootResourceId
   UserResource:
     Value: !GetAtt UserIdResource.Outputs.ApiResourceID
 
-  # DeploymentLogicalId:
-  #   Value: !Ref RestApiDeploymentV1
+  DeploymentLogicalId:
+    Value: !Ref RestApiDeploymentV1
 
-  # StageLogicalId:
-  #   Value: !Ref RestApiStage
+  StageLogicalId:
+    Value: !Ref RestApiStage
 
   AuthorizerLogicalId:
     Value: !Ref Authorizer
