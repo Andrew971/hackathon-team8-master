@@ -169,9 +169,9 @@ Resources:
         Type: LINUX_CONTAINER
         EnvironmentVariables:
         - Name: ARTIFACT_STORE
-          Value: !Ref ArtifactStoreBucketName
+          Value: !Ref ArtifactStoreBucketNameRegional
         - Name: KMS_KEY_ID
-          Value: !Ref KMSKeyID
+          Value: !Ref KMSKeyArnRegional
       Source: 
         BuildSpec: !Ref PipelineBuildSpecFileName
         Type: CODEPIPELINE
@@ -217,7 +217,7 @@ Resources:
             - Effect: Allow
               Action:
               - kms:*
-              Resource: !Ref KMSKeyArn
+              Resource: !Ref KMSKeyArnRegional
       Path: !Ref PathRole
       RoleName: !Sub ${ProjectName}-codebuild-role
 
@@ -555,7 +555,7 @@ Resources:
                 - kms:*
                 Resource: 
                   - !Ref KMSKeyArn
-                  - !Ref KMSKeyArnRegional
+                  - !Ref KMSKeyIDRegional
 
       Path: !Ref PathRole
       RoleName: !Sub ${PipelineName}-role
