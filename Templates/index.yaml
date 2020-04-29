@@ -189,6 +189,9 @@ Resources:
         ApiLogicalId: !GetAtt RestApi.Outputs.ApiLogicalId 
         ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
         UserResource: !GetAtt RestApi.Outputs.UserResource 
+        CognitoPoolID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalId
+        CognitoClientID: !GetAtt AuthenticationService.Outputs.UserPoolLogicalClientId
+        AuthenticationTopicArn: !GetAtt AuthenticationService.Outputs.AuthenticationTopicArn 
         AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
         BackendAPI: !Sub
           - https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${RestApiStage}
