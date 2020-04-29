@@ -47,6 +47,10 @@ Parameters:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
     Type: String
+  BackendAPI:
+    Default: generic-project-name
+    Description: The name for the project associated with this pipeline (used to namespace resources)
+    Type: String
   PipelineName:
     Default: generic-project-name
     Description: The name for the project associated with this pipeline (used to namespace resources)
@@ -293,6 +297,7 @@ Resources:
                         "AuthorizerLogicalId": "${AuthorizerLogicalId}",
                         "UserResource": "${UserResource}",
                         "CognitoPoolID": "${CognitoPoolID}",
+                        "BackendAPI": "${BackendAPI}"
                         "CognitoClientID": "${CognitoClientID}"
                       }
                   - GitHubToken: !Ref GitHubToken
@@ -300,6 +305,7 @@ Resources:
                     AuthenticationTopicArn: !Ref AuthenticationTopicArn
                     UserResource: !Ref UserResource
                     ApiLogicalId: !Ref ApiLogicalId
+                    BackendAPI: !Ref BackendAPI
                     ApiRootResource: !Ref ApiRootResource
                     AuthorizerLogicalId: !Ref AuthorizerLogicalId
                     CognitoPoolID: !Ref CognitoPoolID
@@ -418,7 +424,9 @@ Resources:
             - Effect: Allow
               Action:
               - kms:*
-              Resource: !Ref KMSKeyArn
+              Resource: 
+                - !Ref KMSKeyArn
+                - !Ref KMSKeyArnRegional
             - Effect: Allow
               Action:
               - ssm:*
@@ -545,7 +553,9 @@ Resources:
               - Effect: Allow
                 Action:
                 - kms:*
-                Resource: !Ref KMSKeyArn
+                Resource: 
+                  - !Ref KMSKeyArn
+                  - !Ref KMSKeyArnRegional
 
       Path: !Ref PathRole
       RoleName: !Sub ${PipelineName}-role

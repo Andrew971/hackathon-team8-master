@@ -67,11 +67,11 @@ Resources:
         ArtifactStoreBucketName: !Ref ArtifactStoreBucketName
         GitHubToken: !Ref GitHubToken
         GitHubOwner: !Ref GitHubOwner
-        BackendAPI: test
-        # BackendAPI: !Sub
-        #   - https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${RestApiStage}
-        #   - RestApi: !GetAtt RestApi.Outputs.ApiLogicalId 
-        #     RestApiStage: !GetAtt RestApi.Outputs.StageLogicalId
+        # BackendAPI: test
+        BackendAPI: !Sub
+          - https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${RestApiStage}
+          - RestApi: !GetAtt RestApi.Outputs.ApiLogicalId 
+            RestApiStage: !GetAtt RestApi.Outputs.StageLogicalId
         ProductAPI: test
         OrderAPI: test
         UserAPI: test
@@ -190,7 +190,10 @@ Resources:
         ApiRootResource: !GetAtt RestApi.Outputs.ApiRootResource 
         UserResource: !GetAtt RestApi.Outputs.UserResource 
         AuthorizerLogicalId: !GetAtt RestApi.Outputs.AuthorizerLogicalId 
-
+        BackendAPI: !Sub
+          - https://${RestApi}.execute-api.${AWS::Region}.amazonaws.com/${RestApiStage}
+          - RestApi: !GetAtt RestApi.Outputs.ApiLogicalId 
+            RestApiStage: !GetAtt RestApi.Outputs.StageLogicalId
 Outputs:
   AuthenticationTopicArn:
     Value: !GetAtt AuthenticationService.Outputs.AuthenticationTopicArn
